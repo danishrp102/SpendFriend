@@ -25,7 +25,7 @@ export async function GET(request: Request) {
                 // Scrape product
                 const scrapedProduct = await scrapeWebsiteProduct(currentProduct.url);
 
-                if (!scrapedProduct) return;
+                if (!scrapedProduct) throw new Error("No product found");
 
                 const updatedPriceHistory = [
                     ...currentProduct.priceHistory,
