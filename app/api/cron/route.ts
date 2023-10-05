@@ -4,12 +4,13 @@ import { generateEmailBody, sendEmail } from "@/lib/nodemailer";
 import { scrapeWebsiteProduct } from "@/lib/scraper";
 import { getAveragePrice, getEmailNotifType, getHighestPrice, getLowestPrice } from "@/lib/utlis";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export const maxDuration = 10; // 300 seconds
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
     try {
         connectToDB();
 
