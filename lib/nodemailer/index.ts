@@ -80,35 +80,23 @@ export async function generateEmailBody(
   return { subject, body };
 }
 
+const transporter = nodemailer.createTransport({
+  pool: true,
+  host: "smtp-mail.outlook.com", // hostname
+  // secureConnection: false, // TLS requires secureConnection to be false
+  // service: 'hotmail',
+  port: 587, // port for secure SMTP
+  tls: {
+    ciphers: 'SSLv3'
+  },
+  auth: {
+    user: 'danishpinto102@outlook.com',
+    pass: process.env.EMAIL_PASSWORD,
+  },
+  maxConnections: 1,
+})
+
 export const sendEmail = async (emailContent: EmailContent, sendTo: string[]) => {
-
-  const transporter = nodemailer.createTransport({
-    pool: true,
-    service: 'hotmail',
-    port: 2525,
-    auth: {
-      user: 'danishpinto102@outlook.com',
-      pass: process.env.EMAIL_PASSWORD,
-    },
-    maxConnections: 1,
-  })
-
-  await new Promise((resolve, reject) => {
-    // verify the connection configuration
-
-    transporter.verify(function (error, success) {
-      if (error) {
-        console.log(error);
-        reject(error);
-      }
-
-      else {
-        console.log("Server is ready to receive messages");
-        resolve(success);
-      }
-    });
-  });
-
   const mailOptions = {
     from: 'danishpinto102@outlook.com',
     to: sendTo,
@@ -116,80 +104,9 @@ export const sendEmail = async (emailContent: EmailContent, sendTo: string[]) =>
     subject: emailContent.subject,
   }
 
-  await new Promise((resolve, reject) => {
-    // send Emails
-    transporter.sendMail(mailOptions, (error: any, info: any) => {
-      if (error) {
-        console.log('sendEmail error: ', error);
-        reject(error);
-      }
+  transporter.sendMail(mailOptions, (error: any, info: any) => {
+    if (error) return console.log(error);
 
-      else {
-        console.log('Email sent: ', info);
-        resolve(info);
-      }
-
-    });
-  });
-
-
+    console.log('Email sent: ', info);
+  })
 }
-
-
-/*
-export default async (req, res) => {
-
-  const { firstName, lastName, email, message } = JSON.parse(req.body);
-  
-  const transporter = nodemailer.createTransport({
-      port: 465,
-      host: "smtp.gmail.com",
-      auth: {
-          user: "myEmail@gmail.com",
-          pass: "password",
-      },
-      secure: true,
-  });
-  
-  await new Promise((resolve, reject) => {
-      // verify connection configuration
-      transporter.verify(function (error, success) {
-          if (error) {
-              console.log(error);
-              reject(error);
-          } else {
-              console.log("Server is ready to take our messages");
-              resolve(success);
-          }
-      });
-  });
-  
-  const mailData = {
-      from: {
-          name: `${firstName} ${lastName}`,
-          address: "myEmail@gmail.com",
-      },
-      replyTo: email,
-      to: "recipient@gmail.com",
-      subject: `form message`,
-      text: message,
-      html: `${message}`,
-  };
-  
-  await new Promise((resolve, reject) => {
-      // send mail
-      transporter.sendMail(mailData, (err, info) => {
-          if (err) {
-              console.error(err);
-              reject(err);
-          } else {
-              console.log(info);
-              resolve(info);
-          }
-      });
-  });
-  
-  res.status(200).json({ status: "OK" });
-  };
-
-*/
