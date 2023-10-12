@@ -80,23 +80,32 @@ export async function generateEmailBody(
   return { subject, body };
 }
 
-const transporter = nodemailer.createTransport({
-  pool: true,
-  host: "smtp-mail.outlook.com", // hostname
-  // secureConnection: false, // TLS requires secureConnection to be false
-  // service: 'hotmail',
-  port: 587, // port for secure SMTP
-  tls: {
-    ciphers: 'SSLv3'
-  },
-  auth: {
-    user: 'danishpinto102@outlook.com',
-    pass: process.env.EMAIL_PASSWORD,
-  },
-  maxConnections: 1,
-})
-
 export const sendEmail = async (emailContent: EmailContent, sendTo: string[]) => {
+
+  const transporter = nodemailer.createTransport({
+    pool: true,
+    service: 'hotmail',
+    port: 2525,
+    auth: {
+      user: 'danishpinto102@outlook.com',
+      pass: process.env.EMAIL_PASSWORD,
+    },
+    maxConnections: 1,
+  })
+
+  await new Promise((resolve, reject) => {
+    // verify connection configuration
+    transporter.verify(function (error, success) {
+      if (error) {
+        console.log(error);
+        reject(error);
+      } else {
+        console.log("Server is ready to take our messages");
+        resolve(success);
+      }
+    });
+  });
+
   const mailOptions = {
     from: 'danishpinto102@outlook.com',
     to: sendTo,
@@ -104,9 +113,22 @@ export const sendEmail = async (emailContent: EmailContent, sendTo: string[]) =>
     subject: emailContent.subject,
   }
 
-  transporter.sendMail(mailOptions, (error: any, info: any) => {
-    if (error) return console.log(error);
+  await new Promise((resolve, reject) => {
+    // send mail
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        reject(error);
+      } else {
+        console.log(info);
+        resolve(info);
+      }
+    });
+  });
 
-    console.log('Email sent: ', info);
-  })
+  // transporter.sendMail(mailOptions, (error: any, info: any) => {
+  //   if (error) return console.log(error);
+
+  //   console.log('Email sent: ', info);
+  // })
 }
