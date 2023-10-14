@@ -44,6 +44,7 @@ export async function scrapeWebsiteProduct(url: string) {
         const originalPrice = extractPrice(
             $('#priceblock_ourprice'), // amazon
             $('.a-price.a-text-price span.a-offscreen'),
+            $('.a-offscreen'),
             $('#listPrice'),
             $('#priceblock_dealprice'),
             $('.a-size-base.a-color-price'),
