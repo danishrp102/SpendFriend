@@ -1,16 +1,17 @@
-"use server"
-
 import React from 'react';
 import Image from 'next/image';
 import Searchbar from '@/components/Searchbar';
 import HeroCarousel from '@/components/HeroCarousel';
-import Feed from '@/components/Feed';
 import { Product } from '@/types';
 import ProductCard from '@/components/ProductCard';
 import { getAllProducts } from '@/lib/actions';
 
-const Home = () => {
-  // const allProducts = await getAllProducts();
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+cache: 'no store';
+
+const Home = async () => {
+  const allProducts = await getAllProducts();
 
   return (
     <>
@@ -47,10 +48,10 @@ const Home = () => {
         <h2 className='section-text'>Trending</h2>
 
         <div className='flex flex-wrap gap-x-8 gap-y-16'>
-          <Feed />
-          {/* {allProducts?.map((product: Product) => (
+          {/* <Feed /> */}
+          {allProducts?.map((product: Product) => (
             <ProductCard key={product._id} product={product}/>
-        ))} */}
+        ))}
         </div>
       </section>
     </>

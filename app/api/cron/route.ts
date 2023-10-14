@@ -12,7 +12,7 @@ export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
     try {
-        await connectToDB();
+        connectToDB();
 
         const products = await Product.find({});
 
