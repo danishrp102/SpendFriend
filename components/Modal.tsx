@@ -39,7 +39,7 @@ const Modal = ({productId}: Props) => {
             <Transition appear show={isOpen} as={Fragment}>
                 <Dialog as="div" onClose={closeModal} className="dialog-container">
                     <div className='min-h-screen px-4 text-center'>
-                        <Transition.Child
+                        <Transition.Child // to darken the background page of the product
                             as={Fragment}
                             enter="ease-out duration-300"
                             enterFrom="opacity-0"
@@ -56,7 +56,7 @@ const Modal = ({productId}: Props) => {
                             aria-hidden="true"
                         />
 
-                        <Transition.Child
+                        <Transition.Child // actual modal
                             as={Fragment}
                             enter="ease out duration-300"
                             enterFrom="opacity-0 scale-95"
@@ -70,7 +70,7 @@ const Modal = ({productId}: Props) => {
                                     <div className='flex justify-between'>
                                         <div className='p-3 border border-gray-200 rounded-10'>
                                             <Image
-                                                src="/assets/icons/logo.svg"
+                                                src="/assets/icons/logo-main.png"
                                                 alt="logo"
                                                 width={28}
                                                 height={28}

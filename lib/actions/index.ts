@@ -89,7 +89,7 @@ export async function getSimilarProducts(productId: string) {
         if (!currentProduct) return null;
 
         const similarProducts = await Product.find({
-            _id: { $ne: productId }, // find all the products where _id is $ and not equal to the current productId 
+            _id: { $ne: productId }, // find all the products where _id is not equal to the current productId 
         }).limit(3);
 
         return similarProducts;
@@ -118,7 +118,6 @@ export async function addUserEmailToProduct(productId: string, userEmail: string
         }
     } catch (error) {
         console.log(error);
-
     }
 }
 

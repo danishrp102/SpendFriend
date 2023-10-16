@@ -5,11 +5,13 @@ interface Props {
     title: string;
     iconSrc: string;
     value: string;
+    borderColorParam: string;
 }
 
-const PriceInfoCard = ({title, iconSrc, value}: Props) => {
+const PriceInfoCard = ({title, iconSrc, value, borderColorParam}: Props) => {
   return (
-    <div className={`price-info_card`}>
+    <div className={`price-info_card ${borderColorParam}`}>
+        
         <p className='text-base text-black-100'>
             {title}
         </p>

@@ -25,7 +25,7 @@ const Navbar = () => {
         <nav className='nav'>
             <Link onClick={(e) => handleClick} className='flex items-center gap-1' href='/'>
                 <Image 
-                    src="/assets/icons/logo.svg"
+                    src="/assets/icons/logo-main.png"
                     width={27}
                     height={27}
                     alt="Logo"

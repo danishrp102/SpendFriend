@@ -1,6 +1,4 @@
 import { PriceHistoryItem, Product } from "@/types";
-// import { Notification } from "@lib/nodemailer";
-// import { THRESHOLD_PERCENTAGE } from "@/lib/nodemailer";
 
 const Notification = {
     WELCOME: 'WELCOME',

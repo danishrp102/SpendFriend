@@ -4,17 +4,18 @@ import { generateEmailBody, sendEmail } from "@/lib/nodemailer";
 import { scrapeWebsiteProduct } from "@/lib/scraper";
 import { getAveragePrice, getEmailNotifType, getHighestPrice, getLowestPrice } from "@/lib/utlis";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+// import type { NextRequest } from "next/server";
 
 export const maxDuration = 10; // 300 seconds
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
         connectToDB();
 
-        const products = await Product.find({});
+        // const products = await Product.find({});
+        const products = await Product.find();
 
         if (!products) throw new Error("No products found");
 
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
 
                 if (!scrapedProduct) throw new Error("No product found");
 
-                const updatedPriceHistory = [
+                const updatedPriceHistory: any = [
                     ...currentProduct.priceHistory,
                     { price: scrapedProduct.currentPrice }
                 ]
@@ -41,6 +42,7 @@ export async function GET(request: NextRequest) {
                 const updatedProduct = await Product.findOneAndUpdate(
                     { url: product.url },
                     product,
+                    { upsert: true, new: true }
                 );
 
                 // 2) check the status of each product and send email accordingly
@@ -55,7 +57,7 @@ export async function GET(request: NextRequest) {
 
                     const emailContent = await generateEmailBody(productInfo, emailNotifType);
 
-                    const userEmails = updatedProduct.users.map((user: any) => user.email)
+                    const userEmails = updatedProduct.users.map((user: any) => user.email);
 
                     await sendEmail(emailContent, userEmails);
                 }
@@ -65,9 +67,11 @@ export async function GET(request: NextRequest) {
         )
 
         return NextResponse.json({
-            message: 'Ok', data: updatedProducts
+            message: 'Ok',
+            data: updatedProducts
         })
     } catch (error: any) {
+        console.log("Error in GET: ", error.message);
         throw new Error(`Error in GET: ${error.message}`);
     }
 }

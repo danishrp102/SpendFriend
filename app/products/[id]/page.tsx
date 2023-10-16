@@ -135,21 +135,24 @@ const ProductDetails = async ({params : {id}}: Props) => {
                                 title="Current Price"
                                 iconSrc="/assets/icons/price-tag.svg"
                                 value={`${product.currency} ${formatNumber(product.currentPrice)}`}
-                            />
+                                borderColorParam='border-l-[#b6dbff]'                            />
                             <PriceInfoCard
                                 title="Average Price"
                                 iconSrc="/assets/icons/chart.svg"
                                 value={`${product.currency} ${formatNumber(product.averagePrice)}`}
+                                borderColorParam='border-l-[#8b5aad]'
                             />
                             <PriceInfoCard
                                 title="Highest Price"
                                 iconSrc="/assets/icons/arrow-up.svg"
                                 value={`${product.currency} ${formatNumber(product.highestPrice)}`}
+                                borderColorParam='border-l-[#ed425a]'
                             />
                             <PriceInfoCard
                                 title="Lowest Price"
                                 iconSrc="/assets/icons/arrow-down.svg"
                                 value={`${product.currency} ${formatNumber(product.lowestPrice)}`}
+                                borderColorParam='border-l-[#beffc5]'
                             />
                         </div>
                     </div>
