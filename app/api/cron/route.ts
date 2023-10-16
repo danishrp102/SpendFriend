@@ -71,7 +71,7 @@ export async function GET() {
             data: updatedProducts
         })
     } catch (error: any) {
-        console.log("Error in GET: ", error.message);
+        // console.log("Error in GET: ", error.message);
         throw new Error(`Error in GET: ${error.message}`);
     }
 }
