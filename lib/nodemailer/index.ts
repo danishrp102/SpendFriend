@@ -84,10 +84,10 @@ export const sendEmail = async (emailContent: EmailContent, sendTo: string[]) =>
 
   const transporter = nodemailer.createTransport({
     pool: true,
-    service: 'hotmail',
-    port: 2525,
+    service: 'gmail',
+    // port: 2525,
     auth: {
-      user: 'danishpinto102@outlook.com',
+      user: `${process.env.EMAIL}`,
       pass: process.env.EMAIL_PASSWORD,
     },
     maxConnections: 1,
@@ -107,7 +107,7 @@ export const sendEmail = async (emailContent: EmailContent, sendTo: string[]) =>
   });
 
   const mailOptions = {
-    from: 'danishpinto102@outlook.com',
+    from: `${process.env.EMAIL}`,
     to: sendTo,
     html: emailContent.body,
     subject: emailContent.subject,

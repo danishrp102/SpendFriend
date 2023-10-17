@@ -1,22 +1,17 @@
-import cron from "node-cron";
 import Product from "@/lib/models/product.model";
 import { connectToDB } from "@/lib/mongoose";
 import { generateEmailBody, sendEmail } from "@/lib/nodemailer";
 import { scrapeWebsiteProduct } from "@/lib/scraper";
 import { getAveragePrice, getEmailNotifType, getHighestPrice, getLowestPrice } from "@/lib/utils";
 import { NextRequest, NextResponse } from "next/server";
-// import type { NextRequest } from "next/server";
 
-export const maxDuration = 10; // 10 seconds allowed for vercel hobby version
+export const maxDuration = 10; // 10 seconds for vercel hobby version
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 export const fetchCache = 'force-no-store';
 
-
-const task = cron.schedule('0 7 * * *', async () => {
+export async function GET(request: NextRequest) {
     try {
-        // async function GET(request: NextRequest) {
-        // try {
         connectToDB();
 
         // const products = await Product.find({});
@@ -75,21 +70,8 @@ const task = cron.schedule('0 7 * * *', async () => {
             message: "Ok",
             data: updatedProducts,
         });
-        // }
-        // catch (error: any) {
-        //     // console.log("Error in GET: ", error.message);
-        //     throw new Error(`Error in GET: ${error.message}`);
-        // }
-        // }
-
-        // console.log('Task is running...');
     } catch (error: any) {
-        // console.error('Error in task: ', error);
+        // console.log("Error in GET: ", error.message);
         throw new Error(`Error in GET: ${error.message}`);
     }
-}, {
-    scheduled: true,
-    timezone: "Asia/Kolkata" // Indian Standard Time
-});
-
-task.start();
+}
