@@ -1,37 +1,36 @@
-import { NextResponse } from "next/server";
-
-import { getLowestPrice, getHighestPrice, getAveragePrice, getEmailNotifType } from "@/lib/utils";
-import { connectToDB } from "@/lib/mongoose";
 import Product from "@/lib/models/product.model";
-import { scrapeWebsiteProduct } from "@/lib/scraper";
+import { connectToDB } from "@/lib/mongoose";
 import { generateEmailBody, sendEmail } from "@/lib/nodemailer";
+import { scrapeWebsiteProduct } from "@/lib/scraper";
+import { getAveragePrice, getEmailNotifType, getHighestPrice, getLowestPrice } from "@/lib/utils";
+import { NextRequest, NextResponse } from "next/server";
 
-export const maxDuration = 10; // This function can run for a maximum of 300 seconds
-export const dynamic = "force-dynamic";
+export const maxDuration = 10; // 10 seconds for vercel hobby version
+export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+    console.log("GET Request: ", request);
+
     try {
         connectToDB();
 
         const products = await Product.find({});
+        // const products = await Product.find();
 
-        if (!products) throw new Error("No product fetched");
+        if (!products) throw new Error("No products found");
 
-        // ======================== 1 SCRAPE LATEST PRODUCT DETAILS & UPDATE DB
+        // 1) scrape latest product details and update the db
         const updatedProducts = await Promise.all(
             products.map(async (currentProduct) => {
-                // Scrape product
                 const scrapedProduct = await scrapeWebsiteProduct(currentProduct.url);
 
-                if (!scrapedProduct) return;
+                if (!scrapedProduct) throw new Error("No product found");
 
                 const updatedPriceHistory = [
                     ...currentProduct.priceHistory,
-                    {
-                        price: scrapedProduct.currentPrice,
-                    },
-                ];
+                    { price: scrapedProduct.currentPrice },
+                ]
 
                 const product = {
                     ...scrapedProduct,
@@ -41,30 +40,26 @@ export async function GET(request: Request) {
                     averagePrice: getAveragePrice(updatedPriceHistory),
                 };
 
-                // Update Products in DB
                 const updatedProduct = await Product.findOneAndUpdate(
-                    {
-                        url: product.url,
-                    },
-                    product
+                    { url: product.url },
+                    product,
+                    // { upsert: true, new: true }
                 );
 
-                // ======================== 2 CHECK EACH PRODUCT'S STATUS & SEND EMAIL ACCORDINGLY
-                const emailNotifType = getEmailNotifType(
-                    scrapedProduct,
-                    currentProduct
-                );
+                // 2) check the status of each product and send email accordingly
+
+                const emailNotifType = getEmailNotifType(scrapedProduct, currentProduct);
 
                 if (emailNotifType && updatedProduct.users.length > 0) {
                     const productInfo = {
                         title: updatedProduct.title,
                         url: updatedProduct.url,
                     };
-                    // Construct emailContent
+
                     const emailContent = await generateEmailBody(productInfo, emailNotifType);
-                    // Get array of user emails
+
                     const userEmails = updatedProduct.users.map((user: any) => user.email);
-                    // Send email notification
+
                     await sendEmail(emailContent, userEmails);
                 }
 
@@ -77,6 +72,7 @@ export async function GET(request: Request) {
             data: updatedProducts,
         });
     } catch (error: any) {
-        throw new Error(`Failed to get all products: ${error.message}`);
+        // console.log("Error in GET: ", error.message);
+        throw new Error(`Error in GET: ${error.message}`);
     }
 }
