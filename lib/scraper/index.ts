@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as cheerio from 'cheerio';
-import { extractCurrency, extractDescription, extractPrice } from "../utlis";
+import { extractCurrency, extractDescription, extractPrice } from "../utils";
 
 export async function scrapeWebsiteProduct(url: string) {
     if (!url) return;
@@ -69,7 +69,8 @@ export async function scrapeWebsiteProduct(url: string) {
         // Construct data object with scraped information
         const data = {
             url,
-            currency: currency || '₹',
+            // currency: currency || '₹',
+            currency: String(currency) || '₹',
             image: imageUrls[0],
             title,
             currentPrice: Number(currentPrice) || Number(originalPrice),

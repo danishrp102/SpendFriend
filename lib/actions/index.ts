@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import Product from "../models/product.model";
 import { connectToDB } from "../mongoose";
 import { scrapeWebsiteProduct } from "../scraper";
-import { getAveragePrice, getHighestPrice, getLowestPrice } from "../utlis";
+import { getAveragePrice, getHighestPrice, getLowestPrice } from "../utils";
 import { User } from "@/types";
 import { generateEmailBody, sendEmail } from "../nodemailer";
 
@@ -62,7 +62,7 @@ export async function getProductById(productId: string) {
 
         return product;
     } catch (error) {
-        console.log(error);
+        console.log("getProductById error: ", error);
     }
 }
 
@@ -75,8 +75,7 @@ export async function getAllProducts() {
 
         return products;
     } catch (error) {
-        console.log(error);
-
+        console.log("getAllProducts error: ", error);
     }
 }
 
@@ -94,7 +93,7 @@ export async function getSimilarProducts(productId: string) {
 
         return similarProducts;
     } catch (error) {
-        console.log(error);
+        console.log("getSimilarProducts error: ", error);
     }
 }
 
@@ -117,7 +116,7 @@ export async function addUserEmailToProduct(productId: string, userEmail: string
             await sendEmail(emailContent, [userEmail]);
         }
     } catch (error) {
-        console.log(error);
+        console.log("addUserEmailToProduct error: ", error);
     }
 }
 

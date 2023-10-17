@@ -20,6 +20,7 @@ const isValidURL = (url: string) => {
       }
 
   } catch (error) {
+      console.log("Searchbar isValidURL error", error);
       return false;
   }
 
@@ -44,7 +45,7 @@ const Searchbar = () => {
         // scrape the product page
         const product = await scrapeAndStoreProduct(searchPrompt);
       } catch (error) {
-          console.log(error);
+          console.log("Searchbar handleSubmit error: ", error);
           
       } finally {
         setIsLoading(false);

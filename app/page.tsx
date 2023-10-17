@@ -8,7 +8,8 @@ import { getAllProducts } from '@/lib/actions';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
-cache: 'no store';
+export const fetchCache = 'force-no-store';
+// cache: 'no store';
 
 const Home = async () => {
   const allProducts = await getAllProducts();
