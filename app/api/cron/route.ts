@@ -8,14 +8,15 @@ import { NextRequest, NextResponse } from "next/server";
 export const maxDuration = 10; // 10 seconds for vercel hobby version
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
-export const fetchCache = 'force-no-store';
 
 export async function GET(request: NextRequest) {
+    console.log("GET Request: ", request);
+
     try {
         connectToDB();
 
-        // const products = await Product.find({});
-        const products = await Product.find();
+        const products = await Product.find({});
+        // const products = await Product.find();
 
         if (!products) throw new Error("No products found");
 
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
 
                 if (!scrapedProduct) throw new Error("No product found");
 
-                const updatedPriceHistory: any = [
+                const updatedPriceHistory = [
                     ...currentProduct.priceHistory,
                     { price: scrapedProduct.currentPrice },
                 ]
